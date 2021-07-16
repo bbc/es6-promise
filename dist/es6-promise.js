@@ -3,7 +3,7 @@
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   4.2.8+e925eae0
+ * @version   4.2.8+84a0265f
  */
 
 (function (global, factory) {
@@ -33,7 +33,6 @@
   var isArray = _isArray;
 
   var len = 0;
-  var vertxNext = void 0;
   var customSchedulerFn = void 0;
 
   var asap = function asap(callback, arg) {
@@ -60,54 +59,6 @@
     asap = asapFn;
   }
 
-  var browserWindow = typeof window !== 'undefined' ? window : undefined;
-  var browserGlobal = browserWindow || {};
-  var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
-  var isNode = typeof self === 'undefined' && typeof process !== 'undefined' && {}.toString.call(process) === '[object process]';
-
-  // test for web worker but not in IE10
-  var isWorker = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts !== 'undefined' && typeof MessageChannel !== 'undefined';
-
-  // node
-  function useNextTick() {
-    // node version 0.10.x displays a deprecation warning when nextTick is used recursively
-    // see https://github.com/cujojs/when/issues/410 for details
-    return function () {
-      return process.nextTick(flush);
-    };
-  }
-
-  // vertx
-  function useVertxTimer() {
-    if (typeof vertxNext !== 'undefined') {
-      return function () {
-        vertxNext(flush);
-      };
-    }
-
-    return useSetTimeout();
-  }
-
-  function useMutationObserver() {
-    var iterations = 0;
-    var observer = new BrowserMutationObserver(flush);
-    var node = document.createTextNode('');
-    observer.observe(node, { characterData: true });
-
-    return function () {
-      node.data = iterations = ++iterations % 2;
-    };
-  }
-
-  // web worker
-  function useMessageChannel() {
-    var channel = new MessageChannel();
-    channel.port1.onmessage = flush;
-    return function () {
-      return channel.port2.postMessage(0);
-    };
-  }
-
   function useSetTimeout() {
     // Store setTimeout reference so es6-promise will be unaffected by
     // other code modifying setTimeout (like sinon.useFakeTimers())
@@ -132,29 +83,7 @@
     len = 0;
   }
 
-  function attemptVertx() {
-    try {
-      var vertx = Function('return this')().require('vertx');
-      vertxNext = vertx.runOnLoop || vertx.runOnContext;
-      return useVertxTimer();
-    } catch (e) {
-      return useSetTimeout();
-    }
-  }
-
-  var scheduleFlush = void 0;
-  // Decide what async method to use to triggering processing of queued callbacks:
-  if (isNode) {
-    scheduleFlush = useNextTick();
-  } else if (BrowserMutationObserver) {
-    scheduleFlush = useMutationObserver();
-  } else if (isWorker) {
-    scheduleFlush = useMessageChannel();
-  } else if (browserWindow === undefined && typeof require === 'function') {
-    scheduleFlush = attemptVertx();
-  } else {
-    scheduleFlush = useSetTimeout();
-  }
+  var scheduleFlush = useSetTimeout();
 
   function then(onFulfillment, onRejection) {
     var parent = this;

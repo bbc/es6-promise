@@ -1,6 +1,6 @@
 # ES6-Promise (subset of [rsvp.js](https://github.com/tildeio/rsvp.js))
 
-**With this fork the polyfill will also be applied if there is native `Promise` support but `Promise.prototype.finally` is missing. The readme has not been updated on this fork other than adding this message.**
+**With this fork the polyfill will also be applied if there is native `Promise` support but `Promise.prototype.finally` is missing. ASAP is also updated to only use `setTimeout`, because some of the other options crashed old devices. The readme has not been updated on this fork other than adding this message.**
 
 This is a polyfill of the [ES6 Promise](http://www.ecma-international.org/ecma-262/6.0/#sec-promise-constructor). The implementation is a subset of [rsvp.js](https://github.com/tildeio/rsvp.js) extracted by @jakearchibald, if you're wanting extra features and more debugging options, check out the [full library](https://github.com/tildeio/rsvp.js).
 
