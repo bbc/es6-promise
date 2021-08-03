@@ -3,7 +3,7 @@
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   4.2.8+543e3f9e
+ * @version   4.2.8+0e9b7b7d
  */
 
 (function (global, factory) {
@@ -1087,11 +1087,11 @@
     if (!(promiseToString === '[object Promise]' && !P.cast && typeof P.prototype.finally === 'function')) {
       local.Promise = Promise;
     } else {
-      if (typeof local.Promise.all !== 'function') {
+      if (typeof P.all !== 'function') {
         local.Promise.all = Promise.all;
       }
 
-      if (typeof local.Promise.race !== 'function') {
+      if (typeof P.race !== 'function') {
         local.Promise.race = Promise.race;
       }
     }
