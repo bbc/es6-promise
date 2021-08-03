@@ -3,7 +3,7 @@
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   4.2.8+84a0265f
+ * @version   4.2.8+0e9b7b7d
  */
 
 (function (global, factory) {
@@ -1072,20 +1072,29 @@
 
     var P = local.Promise;
 
-    if (P) {
-      var promiseToString = null;
-      try {
-        promiseToString = Object.prototype.toString.call(P.resolve());
-      } catch (e) {
-        // silently ignored
-      }
-
-      if (promiseToString === '[object Promise]' && !P.cast && typeof P.prototype.finally === 'function') {
-        return;
-      }
+    if (!P) {
+      local.Promise = Promise;
+      return;
     }
 
-    local.Promise = Promise;
+    var promiseToString = null;
+    try {
+      promiseToString = Object.prototype.toString.call(P.resolve());
+    } catch (e) {
+      // silently ignored
+    }
+
+    if (!(promiseToString === '[object Promise]' && !P.cast && typeof P.prototype.finally === 'function')) {
+      local.Promise = Promise;
+    } else {
+      if (typeof P.all !== 'function') {
+        local.Promise.all = Promise.all;
+      }
+
+      if (typeof P.race !== 'function') {
+        local.Promise.race = Promise.race;
+      }
+    }
   }
 
   // Strange compat..
