@@ -1,5 +1,6 @@
 {
   "private": true,
+  "name": "es6-promise",
   "description": "A lightweight library that provides tools for organizing asynchronous code",
   "version": "4.2.8",
   "author": "Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)",
